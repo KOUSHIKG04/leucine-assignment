@@ -1,20 +1,127 @@
 # User Access Management System
 
-A comprehensive role-based access control system for managing software access requests.
+## Project Overview
+
+This User Access Management System is a comprehensive role-based access control application designed to streamline the process of requesting, approving, and managing software access within an organization. The system implements a secure authentication mechanism and provides different interfaces based on user roles.
+
+## Table of Contents
+
+- [Features](#features)
+- [Roles and Permissions](#roles-and-permissions)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Setup Instructions](#setup-instructions)
+- [API Documentation](#api-documentation)
+- [Frontend Structure](#frontend-structure)
+- [Security](#security)
+- [Troubleshooting](#troubleshooting)
 
 ## Features
 
-- **Authentication**: User signup and login
-- **Role-Based Access Control**: Three distinct roles with different permissions
-- **Software Management**: Create and manage software resources
-- **Access Requests**: Request, approve, and reject access to software
-- **User Management**: Admin tools to manage users and their roles
+- **User Authentication**
+  - Secure signup and login functionality
+  - JWT-based authentication
+  - Password hashing with bcrypt
+  - Session management
 
-## Roles
+- **Role-Based Access Control**
+  - Three distinct user roles with different permissions
+  - Role-specific UI interfaces
+  - Protected routes and API endpoints
 
-- **Employee**: Can sign up, login, and request software access
-- **Manager**: Can view and approve/reject access requests
-- **Admin**: Has full access to the system, including creating software, managing users, and handling all requests
+- **Software Management**
+  - Create and catalog software resources
+  - Define access levels for each software
+  - Manage software metadata
+
+- **Access Request Workflow**
+  - Submit access requests with justification
+  - Review pending requests
+  - Approve or reject requests with audit trail
+  - View request history and status
+
+- **User Management**
+  - Admin dashboard for user oversight
+  - Role assignment and modification
+  - User account management
+
+- **Responsive UI**
+  - Modern, clean interface using Shadcn UI and Tailwind CSS
+  - Mobile-friendly design
+  - Intuitive user experience
+
+## Roles and Permissions
+
+### Employee
+- Can sign up and login to the system
+- Can browse available software
+- Can request access to software with justification
+- Can view their own request history and status
+
+### Manager
+- Includes all Employee permissions
+- Can view all pending access requests
+- Can approve or reject access requests
+- Can provide feedback on rejected requests
+
+### Admin
+- Has full system access
+- Can create and manage software resources
+- Can view all access requests (pending, approved, rejected)
+- Can manage users (view, edit roles, delete)
+- Can override any access decision
+- Can delete requests
+
+## Technology Stack
+
+### Backend
+- **Node.js**: JavaScript runtime for server-side code
+- **Express.js**: Web framework for building the API
+- **TypeScript**: Typed superset of JavaScript for better code quality
+- **TypeORM**: Object-Relational Mapping library for database interactions
+- **PostgreSQL**: Relational database for data storage
+- **Neon DB**: Serverless PostgreSQL database service (optional)
+- **JWT (JSON Web Tokens)**: For secure authentication
+- **bcrypt**: For password hashing
+- **cors**: For handling Cross-Origin Resource Sharing
+
+### Frontend
+- **React**: JavaScript library for building user interfaces
+- **TypeScript**: For type-safe code
+- **React Router**: For client-side routing
+- **Axios**: For HTTP requests
+- **Shadcn UI**: Component library for consistent design
+- **Tailwind CSS**: Utility-first CSS framework
+- **Lucide React**: Icon library
+- **React Context API**: For state management
+
+## Architecture
+
+### Backend Architecture
+
+The backend follows a layered architecture pattern:
+
+1. **Routes Layer**: Defines API endpoints and routes requests to appropriate controllers
+2. **Middleware Layer**: Handles authentication, authorization, and request validation
+3. **Controller Layer**: Contains business logic and processes requests
+4. **Data Access Layer**: Interfaces with the database using TypeORM repositories
+5. **Entity Layer**: Defines database models and relationships
+
+### Frontend Architecture
+
+The frontend follows a component-based architecture:
+
+1. **Pages**: Top-level components representing different routes
+2. **Components**: Reusable UI elements
+3. **Context**: Global state management using React Context API
+4. **Services**: API communication and data fetching
+5. **Types**: TypeScript type definitions
+
+### Database Schema
+
+- **User**: Stores user information and roles
+- **Software**: Stores software resources and access levels
+- **Request**: Stores access requests with relationships to users and software
 
 ## Setup Instructions
 
@@ -37,6 +144,8 @@ A comprehensive role-based access control system for managing software access re
    ```
 
 3. Create a `.env` file in the backend directory with the following variables:
+
+   **Option 1: Using individual database connection parameters:**
    ```
    PORT=5000
    JWT_SECRET=your_jwt_secret_key
@@ -45,6 +154,13 @@ A comprehensive role-based access control system for managing software access re
    DB_USERNAME=postgres
    DB_PASSWORD=your_password
    DB_DATABASE=access_management
+   ```
+   
+   **Option 2: Using Neon database URL:**
+   ```
+   PORT=5000
+   JWT_SECRET=your_jwt_secret_key
+   DATABASE_URL=postgres://user:password@endpoint:port/database
    ```
 
 4. Create the PostgreSQL database:
@@ -316,27 +432,124 @@ A comprehensive role-based access control system for managing software access re
   }
   ```
 
+## Frontend Structure
+
+### Directory Structure
+
+```
+frontend/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── ui/               # Shadcn UI components
+│   │   ├── Navbar.tsx        # Navigation component
+│   │   ├── ProtectedRoute.tsx # Auth protection wrapper
+│   │   └── Requestcard.tsx   # Request display component
+│   ├── context/
+│   │   └── AuthContext.tsx   # Authentication context
+│   ├── lib/
+│   │   └── utils.ts          # Utility functions
+│   ├── pages/
+│   │   ├── AllRequestsPage.tsx   # Admin view of all requests
+│   │   ├── CreateSoftwarePage.tsx # Admin software creation
+│   │   ├── Dashboard.tsx      # User dashboard
+│   │   ├── HomePage.tsx       # Landing page
+│   │   ├── LoginPage.tsx      # User login
+│   │   ├── ManageUsersPage.tsx # Admin user management
+│   │   ├── PendingRequestsPage.tsx # Manager request approval
+│   │   ├── RequestAccessPage.tsx # Employee access requests
+│   │   └── SignupPage.tsx     # User registration
+│   ├── services/
+│   │   └── api.ts            # API service configuration
+│   ├── types/
+│   │   └── types.ts          # TypeScript type definitions
+│   ├── App.css               # Global styles
+│   ├── App.tsx               # Main application component
+│   ├── index.css             # Entry CSS file
+│   └── main.tsx              # Application entry point
+├── .env                      # Environment variables
+├── package.json              # Dependencies and scripts
+├── tailwind.config.js        # Tailwind CSS configuration
+├── tsconfig.json             # TypeScript configuration
+└── vite.config.ts           # Vite bundler configuration
+```
+
+### Key Components
+
+#### Authentication
+- **AuthContext**: Manages user authentication state and provides login/logout functions
+- **ProtectedRoute**: Higher-order component that restricts access based on user roles
+
+#### UI Components
+- **Navbar**: Navigation bar with role-specific links
+- **RequestCard**: Displays request information with appropriate actions
+- **UI Components**: Reusable components like Button, Card, Dialog, etc.
+
+#### Pages
+- **Role-Specific Pages**: Different interfaces for each user role
+- **Form Pages**: Input validation and submission handling
+- **List Pages**: Data fetching and display
+
 ## Security
 
-- JWT authentication for all protected routes
-- Role-based middleware to ensure proper access control
-- Password hashing with bcrypt
-- Input validation for all API endpoints
+### Authentication
+- **JWT-based Authentication**: Secure token-based authentication system
+- **HTTP-only Cookies**: For secure token storage (optional configuration)
+- **Token Expiration**: Automatic session expiry after 24 hours
 
-## Technologies Used
+### Authorization
+- **Role-Based Access Control**: Different permissions for different user roles
+- **Middleware Protection**: Server-side route protection
+- **Frontend Route Guards**: Client-side route protection
 
-### Backend
-- Node.js
-- Express.js
-- TypeORM
-- PostgreSQL
-- TypeScript
-- JWT for authentication
+### Data Protection
+- **Password Hashing**: Using bcrypt with salt rounds
+- **Input Validation**: Server-side validation of all inputs
+- **CORS Protection**: Configured to allow only specific origins
+- **Error Handling**: Secure error responses without exposing sensitive information
 
-### Frontend
-- React
-- TypeScript
-- React Router
-- Axios
-- Shadcn UI components
-- Tailwind CSS
+## Troubleshooting
+
+### Common Issues
+
+#### Backend Connection Issues
+
+**Problem**: Frontend cannot connect to backend (`ERR_CONNECTION_REFUSED`)
+
+**Solutions**:
+- Ensure the backend server is running on the correct port (default: 5000)
+- Check that the API URL in the frontend configuration matches the backend URL
+- Verify there are no firewall or network issues blocking the connection
+
+#### Database Connection Issues
+
+**Problem**: Backend fails to connect to the database
+
+**Solutions**:
+- For local PostgreSQL:
+  - Ensure PostgreSQL service is running
+  - Verify database credentials in `.env` file
+  - Check that the database exists
+
+- For Neon DB:
+  - Verify the connection string format
+  - Ensure the database exists in your Neon account
+  - Check IP allowlist settings if applicable
+
+#### Authentication Issues
+
+**Problem**: Users cannot log in or access protected routes
+
+**Solutions**:
+- Check that JWT_SECRET is properly set in the backend `.env` file
+- Verify that tokens are being properly stored and sent with requests
+- Check browser console for any CORS-related errors
+
+#### Entity Relationship Issues
+
+**Problem**: Database migration errors when adding new fields
+
+**Solutions**:
+- Make new entity fields nullable when adding to existing tables
+- Use TypeORM migrations for complex schema changes
+- Consider dropping and recreating the database during development (not for production)
