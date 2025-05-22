@@ -10,6 +10,10 @@ const softwareRepository
 
 export const createRequest = async (req: Request, res: Response) => {
     try {
+        // Log request information for debugging
+        console.log('Request body:', req.body);
+        console.log('Authenticated user:', req.user);
+        
         const { softwareId, accessType, reason } = req.body;
 
         if (!softwareId || !accessType || !reason) {
@@ -18,6 +22,12 @@ export const createRequest = async (req: Request, res: Response) => {
             });
         }
 
+        // Check if user is authenticated
+        if (!req.user) {
+            return res.status(401).json({
+                message: 'User not authenticated. Please log in.'
+            });
+        }
 
         const software = await softwareRepository.findOneBy({ id: softwareId });
         if (!software) {
@@ -26,21 +36,23 @@ export const createRequest = async (req: Request, res: Response) => {
             });
         }
 
-
         if (!software.accessLevels.includes(accessType)) {
             return res.status(400).json({
                 message: 'Invalid access type for this software'
             });
         }
 
-
+        // Create the access request with explicit type checking
         const accessRequest = requestRepository.create({
-            user: req.user!,
+            user: req.user,
             software,
             accessType: accessType as 'Read' | 'Write' | 'Admin',
             reason,
             status: 'Pending',
         });
+
+        // Log the created request before saving
+        console.log('Access request to be saved:', accessRequest);
 
         await requestRepository.save(accessRequest);
 
@@ -50,8 +62,10 @@ export const createRequest = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error('Error in createRequest:', error);
+        // Provide more detailed error information
         return res.status(500).json({
-            message: 'Server error'
+            message: 'Server error',
+            error: error instanceof Error ? error.message : 'Unknown error'
         });
     }
 };

@@ -1,5 +1,13 @@
 import React from "react";
 import { Software } from "../types/types";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
 
 interface SoftwareCardProps {
   software: Software;
@@ -7,17 +15,21 @@ interface SoftwareCardProps {
 
 const SoftwareCard: React.FC<SoftwareCardProps> = ({ software }) => {
   return (
-    <div className="card mb-3">
-      <div className="card-body">
-        <h5 className="card-title">{software.name}</h5>
-        <p className="card-text">{software.description}</p>
-        <p className="card-text">
-          <small className="text-muted">
-            Access Levels: {software.accessLevels.join(", ")}
-          </small>
-        </p>
-      </div>
-    </div>
+    <Card className="mb-4 shadow-sm">
+      <CardHeader>
+        <CardTitle>{software.name}</CardTitle>
+        <CardDescription>{software.description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {software.accessLevels.map((level) => (
+            <Badge key={level} variant="outline">
+              {level}
+            </Badge>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

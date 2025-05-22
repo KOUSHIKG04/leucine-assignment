@@ -1,10 +1,14 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Button } from "../components/ui/button";
+import '../App.css'
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+
+  console.log("Auth state:", { user, isAuthenticated });
 
   const handleLogout = () => {
     logout();
@@ -12,82 +16,59 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div className="container">
-        <Link className="navbar-brand" to="/">
-          User Access Management
+    <nav className=" shadow-md fixed-top">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <Link to="/" className="text-lg font-bold tracking-wide">
+           Access Management
         </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            {isAuthenticated && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/dashboard">
-                  Dashboard
+
+        <div className="flex items-center gap-6">
+          {isAuthenticated && (
+            <div className="flex gap-4">
+              <Link to="/dashboard" className="hover:underline">
+                DASHBOARD
+              </Link>
+
+              {user?.role === "Admin" && (
+                <Link to="/create-software" className="hover:underline">
+                  CREATE SOFTWARE
                 </Link>
-              </li>
-            )}
-            {isAuthenticated && user?.role === "Admin" && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/create-software">
-                  Create Software
+              )}
+
+              {user?.role === "Employee" && (
+                <Link to="/request-access" className="hover:underline">
+                  REQUEST ACCESS
                 </Link>
-              </li>
-            )}
-            {isAuthenticated && user?.role === "Employee" && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/request-access">
-                  Request Access
+              )}
+
+              {user?.role === "Manager" && (
+                <Link to="/pending-requests" className="hover:underline">
+                  PENDING REQUEST
                 </Link>
-              </li>
-            )}
-            {isAuthenticated && user?.role === "Manager" && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/pending-requests">
-                  Pending Requests
-                </Link>
-              </li>
-            )}
-          </ul>
-          <ul className="navbar-nav">
-            {!isAuthenticated ? (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">
-                    Login
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/signup">
-                    Sign Up
-                  </Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <span className="nav-link">
-                    Welcome, {user?.username} ({user?.role})
-                  </span>
-                </li>
-                <li className="nav-item">
-                  <button
-                    className="nav-link btn btn-link"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            )}
-          </ul>
+              )}
+            </div>
+          )}
+
+          {!isAuthenticated ? (
+            <div className="flex gap-3">
+              <Button variant="outline" asChild>
+                <Link to="/login">LOGIN</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/signup">SIGN UP</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              {/* <span className="text-white">
+                {user?.username} ({user?.role})
+              </span> */}
+
+              <Button onClick={handleLogout} className="cursor-pointer">
+                LOGOUT
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Checkbox } from "../components/ui/checkbox";
+import { Button } from "../components/ui/button";
 
 const CreateSoftware: React.FC = () => {
   const [name, setName] = useState("");
@@ -32,12 +44,10 @@ const CreateSoftware: React.FC = () => {
       await api.post("/software", { name, description, accessLevels });
       setSuccess("Software created successfully!");
 
-      // Reset form
       setName("");
       setDescription("");
       setAccessLevels(["Read"]);
 
-      // Redirect after a delay
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
@@ -50,22 +60,29 @@ const CreateSoftware: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2 className="mb-4">Create Software</h2>
+    <div className="max-w-xl mx-auto mt-8 px-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Create Software</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert className="mb-4">
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
 
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
-
-      <div className="card">
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Software Name
-              </label>
-              <input
-                type="text"
-                className="form-control"
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Software Name</Label>
+              <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -73,68 +90,41 @@ const CreateSoftware: React.FC = () => {
               />
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                Description
-              </label>
-              <textarea
-                className="form-control"
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Textarea
                 id="description"
-                rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                rows={3}
                 required
-              ></textarea>
+              />
             </div>
 
-            <div className="mb-3">
-              <label className="form-label">Access Levels</label>
-              <div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="readAccess"
-                    checked={accessLevels.includes("Read")}
-                    onChange={() => handleAccessLevelChange("Read")}
-                  />
-                  <label className="form-check-label" htmlFor="readAccess">
-                    Read
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="writeAccess"
-                    checked={accessLevels.includes("Write")}
-                    onChange={() => handleAccessLevelChange("Write")}
-                  />
-                  <label className="form-check-label" htmlFor="writeAccess">
-                    Write
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="adminAccess"
-                    checked={accessLevels.includes("Admin")}
-                    onChange={() => handleAccessLevelChange("Admin")}
-                  />
-                  <label className="form-check-label" htmlFor="adminAccess">
-                    Admin
-                  </label>
-                </div>
+            <div>
+              <Label>Access Levels</Label>
+              <div className="flex gap-4 mt-2">
+                {["Read", "Write", "Admin"].map((level) => (
+                  <div key={level} className="flex items-center gap-2">
+                    <Checkbox
+                      id={`${level.toLowerCase()}Access`}
+                      checked={accessLevels.includes(level)}
+                      onCheckedChange={() => handleAccessLevelChange(level)}
+                    />
+                    <Label htmlFor={`${level.toLowerCase()}Access`}>
+                      {level}
+                    </Label>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary">
-              Create Software
-            </button>
+            <Button type="submit" className="w-full py-5 cursor-pointer">
+              CREATE SOFTWARE
+            </Button>
           </form>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

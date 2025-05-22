@@ -7,54 +7,54 @@ import LoginPage from "./pages/LoginPage";
 import RequestAccessPage from "./pages/RequestAccessPage";
 import PendingRequestsPage from "./pages/PendingRequestsPage";
 import Dashboard from "./pages/Dashboard";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
-      
-      {/* Dashboard route - accessible by all authenticated users */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['Employee', 'Manager', 'Admin']}>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
-      {/* Admin only routes */}
-      <Route
-        path="/create-software"
-        element={
-          <ProtectedRoute allowedRoles={["Admin"]}>
-            <CreateSoftwarePage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Employee", "Manager", "Admin"]}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Employee only routes */}
-      <Route
-        path="/request-access"
-        element={
-          <ProtectedRoute allowedRoles={["Employee"]}>
-            <RequestAccessPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/create-software"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <CreateSoftwarePage />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Manager only routes */}
-      <Route
-        path="/pending-requests"
-        element={
-          <ProtectedRoute allowedRoles={["Manager"]}>
-            <PendingRequestsPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        <Route
+          path="/request-access"
+          element={
+            <ProtectedRoute allowedRoles={["Employee"]}>
+              <RequestAccessPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/pending-requests"
+          element={
+            <ProtectedRoute allowedRoles={["Manager"]}>
+              <PendingRequestsPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 };
 

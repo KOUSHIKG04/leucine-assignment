@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   Card,
@@ -77,26 +77,41 @@ const Signup: React.FC = () => {
                 required
               />
             </div>
-            <div className="flex items-center gap-4">
-              <Label htmlFor="role" className="whitespace-nowrap">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="role" className="whitespace-nowrap font-medium">
                 Role :
               </Label>
               <Select value={role} onValueChange={setRole}>
-                <SelectTrigger id="role" className="mt-1 w-[600px]">
+                <SelectTrigger
+                  id="role"
+                  className="mt-1 w-[600px] cursor-pointer"
+                >
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Employee">Employee</SelectItem>
+                <SelectContent className="cursor-pointer">
                   <SelectItem value="Manager">Manager</SelectItem>
+                  <SelectItem value="Employee">Employee</SelectItem>
                   <SelectItem value="Admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <Button type="submit" className="w-full py-5 px-2 mt-3">
+            <Button
+              type="submit"
+              className="w-full py-5 px-2 mt-3 cursor-pointer"
+            >
               SIGN UP
             </Button>
           </form>
+          <p className="mt-4 text-center text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-black hover:underline font-medium"
+            >
+              Login
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>

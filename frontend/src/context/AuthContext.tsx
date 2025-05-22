@@ -28,12 +28,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    
-    const storedUser = localStorage.getItem("user");const token = localStorage.getItem("token");
+    // Fix the formatting and add proper error handling
+    const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
     if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+        console.log("User authenticated from localStorage:", parsedUser);
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        // Clean up invalid data
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      }
     }
 
     setIsLoading(false);
@@ -41,7 +51,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await api.post("/login", {
+      // Fix the endpoint to match the backend route structure
+      const response = await api.post("/auth/login", {
         username,
         password,
       });
@@ -70,7 +81,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     role: string = "Employee"
   ) => {
     try {
-      await api.post("/signup", {
+      // Fix the endpoint to match the backend route structure
+      await api.post("/auth/signup", {
         username,
         password,
         role,

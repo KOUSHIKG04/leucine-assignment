@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { User } from './entities/User';
 import { Software } from './entities/Software';
+import { Request } from './entities/Request';
 
 
 export const AppDataSource = new DataSource({

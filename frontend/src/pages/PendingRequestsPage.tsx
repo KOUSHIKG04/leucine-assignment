@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import api from "../services/api";
 import { AccessRequest } from "../types/types";
 import RequestCard from "../components/Requestcard";
+import { Loader2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 
 const PendingRequests: React.FC = () => {
   const [requests, setRequests] = useState<AccessRequest[]>([]);
@@ -15,12 +17,12 @@ const PendingRequests: React.FC = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await api.get("/requests");
+      const response = await api.get("/requests/pending");
       setRequests(response.data);
-      setLoading(false);
     } catch (err) {
       console.error("Error fetching requests:", err);
       setError("Failed to load pending requests. Please try again later.");
+    } finally {
       setLoading(false);
     }
   };
@@ -29,7 +31,6 @@ const PendingRequests: React.FC = () => {
     try {
       await api.patch(`/requests/${id}`, { status: "Approved" });
       setMessage("Request approved successfully!");
-      // Update the list
       fetchRequests();
     } catch (err: any) {
       setError(
@@ -43,7 +44,6 @@ const PendingRequests: React.FC = () => {
     try {
       await api.patch(`/requests/${id}`, { status: "Rejected" });
       setMessage("Request rejected successfully!");
-      // Update the list
       fetchRequests();
     } catch (err: any) {
       setError(
@@ -53,37 +53,52 @@ const PendingRequests: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border"></div>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <h2 className="mb-4">Pending Access Requests</h2>
+    <div className="max-w-5xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-semibold text-center mb-6">
+        Pending Access Requests
+      </h2>
 
-      {error && <div className="alert alert-danger">{error}</div>}
-      {message && <div className="alert alert-success">{message}</div>}
-
-      {requests.length === 0 ? (
-        <div className="alert alert-info">
-          No pending requests at this time.
+      {loading ? (
+        <div className="flex justify-center items-center h-60">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <div className="row">
-          {requests.map((request) => (
-            <div className="col-md-6" key={request.id}>
-              <RequestCard
-                request={request}
-                onApprove={handleApprove}
-                onReject={handleReject}
-              />
+        <>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {message && (
+            <Alert className="mb-4">
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>{message}</AlertDescription>
+            </Alert>
+          )}
+
+          {requests.length === 0 ? (
+            <Alert className="mb-4">
+              <AlertTitle>No Pending Requests</AlertTitle>
+              <AlertDescription>
+                All access requests have been reviewed.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {requests.map((request) => (
+                <RequestCard
+                  key={request.id}
+                  request={request}
+                  onApprove={handleApprove}
+                  onReject={handleReject}
+                />
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

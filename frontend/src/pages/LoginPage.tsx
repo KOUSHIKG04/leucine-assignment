@@ -37,7 +37,7 @@ const Login: React.FC = () => {
     <div className="flex justify-center items-center min-h-screen   px-4">
       <Card className="w-full max-w-md border-none shadow-none">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">LOGIN</CardTitle>
+          <CardTitle className="text-center text-2xl">LOGIN HERE!!</CardTitle>
         </CardHeader>
         <CardContent>
           {error && (
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full py-5 px-2">
+            <Button type="submit" className="w-full py-5 px-2 cursor-pointer">
               LOGIN
             </Button>
           </form>

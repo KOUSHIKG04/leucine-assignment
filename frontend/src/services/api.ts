@@ -9,11 +9,19 @@ api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            
+            config.headers = config.headers || {};
+            config.headers['Authorization'] = `Bearer ${token}`;
+            console.log('Adding auth token to request:', config.url);
+        } else {
+            console.log('No auth token found for request:', config.url);
         }
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        console.error('Request interceptor error:', error);
+        return Promise.reject(error);
+    }
 );
 
 export default api;
