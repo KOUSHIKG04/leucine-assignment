@@ -33,31 +33,64 @@ const RequestCard: React.FC<RequestCardProps> = ({
     }
   };
 
+  const borderColor = {
+    Approved: "border-l-green-500",
+    Rejected: "border-l-red-500",
+    Pending: "border-l-yellow-500",
+  };
+
   return (
-    <Card className="mb-4 shadow-sm">
+    <Card
+      className={`relative border-l-4 ${
+        borderColor[request.status as keyof typeof borderColor] ||
+        "border-l-muted"
+      } bg-muted/30 hover:bg-muted/50 transition-colors`}
+    >
       <CardHeader>
-        <CardTitle>Request from {request.user.username}</CardTitle>
-        <CardDescription>Software: {request.software.name}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-sm">
-          <span className="font-medium">Access Type:</span> {request.accessType}
-        </p>
-        <p className="text-sm">
-          <span className="font-medium">Reason:</span> {request.reason}
-        </p>
-        <p className="text-sm flex items-center gap-2">
-          <span className="font-medium">Status:</span>
-          <Badge variant={getBadgeVariant(request.status)}>
-            {request.status}
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle className="text-base">
+              Request from{" "}
+              <span className="font-semibold">{request.user.username}</span>
+            </CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">
+              Software: {request.software.name}
+            </CardDescription>
+          </div>
+          <Badge
+            variant={getBadgeVariant(request.status)}
+            className="text-xs py-2"
+          >
+            {request.status.toUpperCase()}
           </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-2 text-sm">
+        <p>
+          <span className="font-medium text-muted-foreground">
+            Access Type:
+          </span>{" "}
+          {request.accessType}
+        </p>
+        <p>
+          <span className="font-medium text-muted-foreground">Reason:</span>{" "}
+          {request.reason}
         </p>
 
         {request.status === "Pending" && onApprove && onReject && (
-          <div className="flex gap-3 pt-2">
-            <Button onClick={() => onApprove(request.id)}>Approve</Button>
-            <Button variant="destructive" onClick={() => onReject(request.id)}>
-              Reject
+          <div className="pt-3 flex flex-col sm:flex-row gap-2">
+            <Button
+              onClick={() => onApprove(request.id)}
+              className="w-full sm:w-auto cursor-pointer"
+            >
+              APPROVE
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => onReject(request.id)}
+              className="w-full sm:w-auto cursor-pointer"
+            >
+              REJECT
             </Button>
           </div>
         )}

@@ -6,6 +6,7 @@ import { AppDataSource } from './data-source';
 import authRoutes from './routes/auth.routes';
 import softwareRoutes from './routes/software.route';
 import requestRoutes from './routes/request.route';
+import userRoutes from './routes/user.route';
 
 const app = express(); const PORT = process.env.PORT || 5000;
 
@@ -19,6 +20,7 @@ app.use(cors({
 app.use('/api/requests', requestRoutes);
 app.use('/api/software', softwareRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 
 AppDataSource.initialize()

@@ -6,6 +6,8 @@ import CreateSoftwarePage from "./pages/CreateSoftwarePage";
 import LoginPage from "./pages/LoginPage";
 import RequestAccessPage from "./pages/RequestAccessPage";
 import PendingRequestsPage from "./pages/PendingRequestsPage";
+import AllRequestsPage from "./pages/AllRequestsPage";
+import ManageUsersPage from "./pages/ManageUsersPage";
 import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
 
@@ -50,6 +52,24 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={["Manager"]}>
               <PendingRequestsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/all-requests"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AllRequestsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/manage-users"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <ManageUsersPage />
             </ProtectedRoute>
           }
         />

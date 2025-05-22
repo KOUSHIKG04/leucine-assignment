@@ -30,9 +30,17 @@ const Navbar: React.FC = () => {
               </Link>
 
               {user?.role === "Admin" && (
-                <Link to="/create-software" className="hover:underline">
-                  CREATE SOFTWARE
-                </Link>
+                <>
+                  <Link to="/create-software" className="hover:underline">
+                    CREATE SOFTWARE
+                  </Link>
+                  <Link to="/all-requests" className="hover:underline">
+                    ALL REQUESTS
+                  </Link>
+                  <Link to="/manage-users" className="hover:underline">
+                    MANAGE USERS
+                  </Link>
+                </>
               )}
 
               {user?.role === "Employee" && (

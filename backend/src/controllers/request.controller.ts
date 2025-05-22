@@ -123,3 +123,61 @@ export const updateRequestStatus = async (req: Request, res: Response) => {
         });
     }
 };
+
+// Admin functionality to get all requests
+export const getAllRequests = async (req: Request, res: Response) => {
+    try {
+        // Check if user is admin
+        if (req.user?.role !== 'Admin') {
+            return res.status(403).json({
+                message: 'Access denied. Admin privileges required.'
+            });
+        }
+
+        const requests = await requestRepository.find({
+            relations: ['user', 'software'],
+        });
+
+        return res.status(200).json(requests);
+    } catch (error) {
+        console.error('Error in getAllRequests:', error);
+        return res.status(500).json({
+            message: 'Server error'
+        });
+    }
+};
+
+// Admin functionality to delete a request
+export const deleteRequest = async (req: Request, res: Response) => {
+    try {
+        // Check if user is admin
+        if (req.user?.role !== 'Admin') {
+            return res.status(403).json({
+                message: 'Access denied. Admin privileges required.'
+            });
+        }
+
+        const { id } = req.params;
+        
+        const request = await requestRepository.findOne({
+            where: { id: parseInt(id) }
+        });
+
+        if (!request) {
+            return res.status(404).json({
+                message: 'Request not found'
+            });
+        }
+
+        await requestRepository.remove(request);
+
+        return res.status(200).json({
+            message: 'Request deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error in deleteRequest:', error);
+        return res.status(500).json({
+            message: 'Server error'
+        });
+    }
+};
